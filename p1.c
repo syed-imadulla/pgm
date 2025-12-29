@@ -1,108 +1,31 @@
-#include <stdio.h>
-
-#include <stdlib.h>
-
-struct Day {
-
- char *dayName;
-
- int date;
-
- char *activity;
-
-};
-
-void create(struct Day *calendar) {
-
- calendar->dayName = (char *)malloc(sizeof(char) * 20);
-
- calendar->activity = (char *)malloc(sizeof(char) * 100);
-
- printf("Enter the day name: ");
-
- scanf("%s", calendar->dayName);
-
- printf("Enter the date: ");
-
- scanf("%d", &calendar->date);
-
- printf("Enter the activity for the day: ");
-
- scanf(" %[^\n]s", calendar->activity);
-
-}
-
-void read(struct Day *calendar, int size) {
-
- for (int i = 0; i < size; i++) {
-
- printf("Enter details for Day %d:\n", i + 1);
-
- create(&calendar[i]);
-
- }
-
-}
-
-void display(struct Day *calendar, int size) 
-
+#include<stdio.h>
+#include<conio.h>
+void main()
 {
-
- printf("\nWeek's Activity Details:\n");
-
- for (int i = 0; i < size; i++) 
-
+int bt[20], wt[20], tat[20], i, n;
+float wtavg, tatavg;
+//clrscr();
+printf("\nEnter the number of processes -- ");
+scanf("%d", &n);
+for(i=0;i<n;i++)
 {
-
- printf("Day %d:\n", i + 1);
-
- printf("Day Name: %s\n", calendar[i].dayName);
-
- printf("Date: %d\n", calendar[i].date);
-
- printf("Activity: %s\n", calendar[i].activity);
-
- printf("\n");
-
+printf("\nEnter Burst Time for Process %d -- ", i);
+scanf("%d", &bt[i]);
 }
-}
-
-int main() 
-
+wt[0] = wtavg = 0;
+tat[0] = tatavg = bt[0];
+for(i=1;i<n;i++)
 {
+wt[i] = wt[i-1] +bt[i-1];
+tat[i] = tat[i-1] +bt[i];
+wtavg = wtavg + wt[i];
+tatavg = tatavg + tat[i];
+}
+printf("\n \t PROCESS \tBURST TIME \t WAITING TIME\t TURNAROUND TIME\n");
+for(i=0;i<n;i++)
+printf("\n\t P%d \t\t %d \t\t %d \t\t %d", i, bt[i], wt[i], tat[i]);
 
- int size;
-
- printf("Enter the number of days in the week: ");
-
- scanf("%d", &size);
-
- struct Day *calendar = (struct Day *)malloc(sizeof(struct Day) * size);
-
- if (calendar == NULL)
-
- {
-
- printf("Memory allocation failed. Exiting program.\n");
-
- return 1;
-
- }
-
- read(calendar, size);
-
- display(calendar, size);
-
- for (int i = 0; i < size; i++) {
-
- free(calendar[i].dayName);
-
- free(calendar[i].activity);
-
- }
-
- free(calendar);
-
- return 0;
-
+printf("\nAverage Waiting Time -- %f", wtavg/n);
+printf("\nAverage Turnaround Time -- %f", tatavg/n);
+getch();
 }
