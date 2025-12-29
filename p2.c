@@ -1,94 +1,41 @@
-#include<stdio.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
-char str[50], pat[20], rep[20], res[50];
-
-int c = 0, m = 0, i = 0, j = 0, k, flag = 0;
-
-void stringmatch()
-
+void main() 
 {
+	  pid_t pid = 0;
+  int status;
+  pid = fork();
 
- while (str[c] != '\0')
-
- {
-
- if (str[m] == pat[i])
-
- {
-
- i++;
-
- m++;
-if (pat[i] == '\0')
-
- {
-
- flag = 1;
-
- for (k = 0; rep[k] != '\0'; k++, j++)
-
- {
-
- res[j] = rep[k];
-
- }
-
- i = 0;
-
- c = m;
-
- }
-
- }
-
- else
-
- {
-
- res[j] = str[c];
-
- j++;
-
- c++;
-
- m = c;
-
- i = 0;
-
- }
-
- }
-
- res[j] = '\0';
-
+if (pid == 0) 
+{
+  printf("I am the child.");
+  execl("/bin/ls", "ls", "-l", "/home/ubuntu/", (char *) 0);
+  perror("In exec(): ");
 }
 
-void main()
-
+if (pid > 0) 
 {
+  printf("I am the parent %d, and the child is %d.\n", getppid(), pid);
+		 pid = wait(&status);
+printf("End of process %d: ", pid);
 
- printf("Enter the main string:");
+		if (WIFEXITED(status)) 
+{
+    printf("The process ended with exit(%d).\n", WEXITSTATUS(status));
+  }
+  if (WIFSIGNALED(status)) 
+{
+    printf("The process ended with kill -%d.\n", WTERMSIG(status));
+  }
+}
 
- gets(str);
-
- printf("\nEnter the pat string:");
-
- gets(pat);
-
- printf("\nEnter the replace string:");
-
- gets(rep);
-
- printf("\nThe string before pattern match is:\n %s", str);
-
- stringmatch();
-
- if (flag == 1)
-
- printf("\nThe string after pattern match and replace is: \n %s ", res);
-
- else
-
- printf("\nPattern string is not found");
-
+if (pid < 0)
+{
+  perror("In fork():");
+}
+exit(0);
 }
